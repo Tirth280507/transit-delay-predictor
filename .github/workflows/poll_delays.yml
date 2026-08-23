@@ -1,0 +1,34 @@
+name: Poll VBB delays
+
+# Runs automatically every 10 minutes, plus you can trigger it manually
+# from the "Actions" tab on GitHub.
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install requests gtfs-realtime-bindings
+
+      - name: Run the poller
+        run: python scripts/poll_delays.py
+
+      - name: Commit and push the updated log
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/delay_log.csv
+          git diff --quiet --cached || git commit -m "Auto: log delays $(date -u +'%Y-%m-%d %H:%M UTC')"
+          git push
