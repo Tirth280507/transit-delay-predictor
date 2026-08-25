@@ -3,8 +3,6 @@ name: Poll VBB delays
 # Runs automatically every 10 minutes, plus you can trigger it manually
 # from the "Actions" tab on GitHub.
 on:
-  schedule:
-    - cron: "*/10 * * * *"
   workflow_dispatch:
 
 jobs:
