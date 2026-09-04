@@ -22,9 +22,11 @@ from pathlib import Path
 
 import requests
 from google.transit import gtfs_realtime_pb2
+from zoneinfo import ZoneInfo
 
 FEED_URL = "https://production.gtfsrt.vbb.de/data"
 SUMMARY_FILE = Path(__file__).resolve().parent.parent / "data" / "delay_summary.csv"
+BERLIN_TZ = ZoneInfo("Europe/Berlin")
 
 HEADERS = {
     "User-Agent": "student-project-transit-delay-predictor (contact: tirth)"
@@ -40,7 +42,7 @@ def poll_once():
     feed = gtfs_realtime_pb2.FeedMessage()
     feed.ParseFromString(resp.content)
 
-    now = datetime.datetime.now()
+    now = datetime.datetime.now(BERLIN_TZ)
     day_of_week = now.strftime("%A")
     hour = now.hour
 
